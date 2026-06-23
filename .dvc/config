@@ -1,4 +1,4 @@
 [core]
     remote = myremote
 ['remote "myremote"']
-    url = C:\Users\user\AppData\Local\temp
+    url = s3://yt-comment-sentiment-analysis-plugin-dvc-s3-bucket
