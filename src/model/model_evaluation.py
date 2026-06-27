@@ -5,13 +5,13 @@ import logging
 import yaml
 import mlflow
 import mlflow.sklearn
+import mlflow.lightgbm
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.feature_extraction.text import TfidfVectorizer
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 import json
-import mlflow.lightgbm
 from mlflow.models import infer_signature
 
 # logging configuration
@@ -116,7 +116,7 @@ def save_model_info(run_id: str, model_path: str, file_path: str) -> None:
         # Create a dictionary with the info you want to save
         model_info = {
             'run_id': run_id,
-            'model_path': model_path
+            'model_path': f"runs:/{run_id}/{model_path}"
         }
         # Save the dictionary as a JSON file
         with open(file_path, 'w') as file:
@@ -161,15 +161,16 @@ def main():
 
             # Log model with signature
             mlflow.lightgbm.log_model(
-                          model,
-                        artifact_path="lgbm_model",
-                        signature=signature,
-                        input_example=input_example
-                         )
+                model,
+                artifact_path="lgbm_model",
+                signature=signature,
+                input_example=input_example
+                
+            )
 
             # Save model info
             model_path = "lgbm_model"
-            save_model_info(run.info.run_id, model_path, 'experiment_info.json')
+            save_model_info(run.info.run_id, "lgbm_model", 'experiment_info.json')
 
             # Log the vectorizer as an artifact
             mlflow.log_artifact(os.path.join(root_dir, 'tfidf_vectorizer.pkl'))
